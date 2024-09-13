@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map API Example</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Map of Roermond</h1>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Create the map
+        const map = L.map('map').setView([51.2, 6.0], 13);
+
+        // Add the OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // Fetch the location data from the server
+        fetch('/location')
+            .then(response => response.json())
+            .then(data => {
+                const { lat, lon } = data;
+
+                // Add a marker using the latitude and longitude
+                L.marker([lat, lon]).addTo(map)
+                  .bindPopup('Gilde Opleidingen ICT')
+                  .openPopup();
+
+                // Center the map on the marker
+                map.setView([lat, lon], 13);
+            })
+            .catch(err => console.error('Error fetching location data:', err));
+    </script>
+</body>
+</html>
